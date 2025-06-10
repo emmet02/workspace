@@ -14,13 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: ./.github/actions/setup-python-uv
+      - name: Set up Python with uv
+        uses: ./.github/actions/setup-python-uv@main
         with:
           python-version: "3.13"
-
-      - name: Install dependencies
-        run: uv install ".[dev]"
+          install-deps: ".[dev]"
 
       - name: Run type checking
         run: ty check
