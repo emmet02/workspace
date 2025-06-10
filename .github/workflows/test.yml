@@ -1,0 +1,57 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    uses: ./.github/actions/setup-python-uv
+    with:
+      python-version: "3.13"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: uv install ".[test]"
+      - name: Run code quality checks
+        run: |
+          ruff check . --output-format json --output-file ruff-report.json
+          ruff format --check .
+      - name: Run type checking
+        run: ty check
+      - name: Run security scan
+        run: bandit -r . -f json -o bandit-report.json
+      - name: Run tests
+        run: pytest
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          retention-days: 7
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: junit.xml
+          retention-days: 7
+      - name: Upload code quality report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality
+          path: ruff-report.json
+          retention-days: 7
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: bandit-report.json
+          retention-days: 7
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false 

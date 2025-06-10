@@ -5,3 +5,114 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.5.0",
+    "bandit>=1.7.7",
+    "ty>=0.1.0",
+]
+
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.25.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=. --cov-report=term-missing --cov-report=xml --junitxml=junit.xml"
+
+[tool.coverage.run]
+source = ["."]
+omit = ["tests/*", "setup.py", ".venv/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "pass",
+    "@abstractmethod",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["workspace"]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+skips = ["B101"]
+
+[tool.ty]
+# Strict type checking mode
+strict = true
+
+# Python version to target
+python-version = "3.13"
+
+# Paths to include in type checking
+include = ["."]
+
+# Paths to exclude from type checking
+exclude = [
+    "tests",
+    ".venv",
+    "**/__pycache__",
+    "**/*.pyc",
+]
+
+# Whether to check third-party imports
+check-imports = true
+
+# Whether to check type annotations in docstrings
+check-docstrings = true
+
+# Whether to check type annotations in comments
+check-comments = true
+
+# Whether to check type annotations in string literals
+check-string-literals = true
+
+# Whether to check type annotations in f-strings
+check-f-strings = true
+
+# Whether to check type annotations in format strings
+check-format-strings = true
+
+# Whether to check type annotations in raw strings
+check-raw-strings = true
+
+# Whether to check type annotations in bytes literals
+check-bytes-literals = true
+
+# Whether to check type annotations in raw bytes literals
+check-raw-bytes-literals = true
